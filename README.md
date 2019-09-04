@@ -1,4 +1,5 @@
-# maven2gradle
-converts maven dependencies to gradle format
+# Maven to Gradle Kotlin DSL
 
-**check it out in [here](http://sagioto.github.io/maven2gradle/)**
+Converts Maven dependencies to Gradle Kotlin DSL format
+
+**Check it out in [here](https://pitcer.github.io/maven-to-gradle-kotlin-dsl/)**
