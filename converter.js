@@ -16,9 +16,13 @@ function parseAndGenerate(){
     for(var i = 0; i < depElems.length; i++) {
         var depElem = depElems[i];
         var scopeElems = depElem.getElementsByTagName('scope');
-        var scope = 'compile';
-        if (scopeElems.length && scopeElems[0].innerHTML == 'test') {
-            scope = 'testCompile';
+        var scope = 'implementation';
+        if (scopeElems.length && scopeElems[0].innerHTML == 'runtime') {
+            scope = 'runtimeOnly';
+        } else if (scopeElems.length && scopeElems[0].innerHTML == 'provided') {
+            scope = 'compileOnly';
+        } else if (scopeElems.length && scopeElems[0].innerHTML == 'test') {
+            scope = 'testImplementation';
         }
         var group = depElem.getElementsByTagName('groupId')[0].innerHTML;
         var artifact = depElem.getElementsByTagName('artifactId')[0].innerHTML;
@@ -27,7 +31,7 @@ function parseAndGenerate(){
         if (versionElems.length) {
             version = versionElems[0].innerHTML;
         }
-        grDeps.push(scope + ' ' + '"' + group + ":" + artifact + ":" + version + '"');
+        grDeps.push(scope + '(' + '"' + group + ":" + artifact + ":" + version + '")');
     }
     var grDepsOutput = grDeps.join('\n');
     if(shouldAddOuterClosure){
