@@ -17,11 +17,11 @@ function parseAndGenerate(){
         var depElem = depElems[i];
         var scopeElems = depElem.getElementsByTagName('scope');
         var scope = 'implementation';
-        if (scopeElems.length && scopeElems[0].innerHTML == 'runtime') {
+        if (scopeElems.length && scopeElems[0].innerHTML === 'runtime') {
             scope = 'runtimeOnly';
-        } else if (scopeElems.length && scopeElems[0].innerHTML == 'provided') {
+        } else if (scopeElems.length && scopeElems[0].innerHTML === 'provided') {
             scope = 'compileOnly';
-        } else if (scopeElems.length && scopeElems[0].innerHTML == 'test') {
+        } else if (scopeElems.length && scopeElems[0].innerHTML === 'test') {
             scope = 'testImplementation';
         }
         var group = depElem.getElementsByTagName('groupId')[0].innerHTML;
@@ -31,7 +31,20 @@ function parseAndGenerate(){
         if (versionElems.length) {
             version = versionElems[0].innerHTML;
         }
-        grDeps.push(scope + '(' + '"' + group + ":" + artifact + ":" + version + '")');
+        var excludeString = "";
+        var exclusions = depElem.getElementsByTagName('exclusions');
+        if(exclusions.length) {
+            var exElems = exclusions[0].getElementsByTagName('exclusion');
+            for (var ii = 0; ii < exElems.length; ii++) {
+                var exclElem = exElems[ii];
+                excludeString += "exclude(group = \"" + exclElem.getElementsByTagName('groupId')[0].innerHTML + "\", module = \"" + exclElem.getElementsByTagName('artifactId')[0].innerHTML + "\")\n"
+            }
+        }
+        if(excludeString !== ""){
+            grDeps.push(scope + '(' + '"' + group + ":" + artifact + ":" + version + '")' + "{\n" + excludeString + "}");
+        } else {
+            grDeps.push(scope + '(' + '"' + group + ":" + artifact + ":" + version + '")');
+        }
     }
     var grDepsOutput = grDeps.join('\n');
     if(shouldAddOuterClosure){
